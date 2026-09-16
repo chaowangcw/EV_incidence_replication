@@ -617,41 +617,22 @@ woriginal_sub_weighted = grpstats(original_sub(temp).*sale(temp), ev(temp), "mea
 % all subsidy generate end================================================
 
 temp = find(etc == 1);
-% cross-price elasticity at the sub-brand level for selected brands;
-sub_brand = data.sub_brand;
-brand_c = sub_brand(temp);
+% Cross-price elasticity at the sub-brand level for selected brands. Numeric
+% brand codes preserve the original selection after vehicle names are removed.
+brand_c = data.brand_d(temp);
+figure_brand_codes = [6; 76; 5; 11; 19; 60; 3; 49; 57; 118; 54; 87];
 pp = price(temp);
 sale_pp = sale(temp);
 brand_id = zeros(length(temp),1);
-nsbr = 12;
+nsbr = numel(figure_brand_codes);
 for i = 1:nsbr
-    if i == 1
-        tb = find(brand_c == "一汽大众(奥迪)");
-    elseif i== 11
-        tb = find(brand_c == "奥迪_import");
-    elseif i == 3
-        tb = find(brand_c == "一汽大众");
-    elseif i == 4
-        tb = find(brand_c == "上汽大众");
-    elseif i == 5
-        tb = find(brand_c == "东风本田");
-    elseif i == 6
-        tb = find(brand_c == "广汽丰田");
-    elseif i == 8
-        tb = find(brand_c == "大众_import");
-    elseif i == 7
-        tb = find(brand_c == "一汽丰田");
-    elseif i == 9
-        tb = find(brand_c == "宝马_import");
-    elseif i == 10
-        tb = find(brand_c == "雷克萨斯_import");
-    elseif i == 2
-        tb = find(brand_c == "比亚迪汽车");
-    elseif i == 12
-        tb = find(brand_c == "特斯拉_import");
+    tb = find(brand_c == figure_brand_codes(i));
+    if isempty(tb)
+        error('Figure 5 brand code %d is absent from the selected market.', ...
+            figure_brand_codes(i));
     end
 
-    p_m(i,:) = mean(pp(tb)); b_m(i,:) = brand_c(tb(1));
+    p_m(i,:) = mean(pp(tb)); b_m(i,:) = figure_brand_codes(i);
     sale_mpp(i,:) = sum(sale_pp(tb));
     brand_id(tb) = i;
 end
@@ -2066,7 +2047,7 @@ grid on;
 
 filename_ptr_range = sprintf('range_ptr_hy.eps');
 saveas(gcf,filename_ptr_range)
-
+close(gcf)
 
 %% Report paper tables
 % Purpose:

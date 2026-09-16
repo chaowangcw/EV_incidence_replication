@@ -1,8 +1,8 @@
-% RUN_ALL_MATLAB Run all MATLAB replication drivers in the required order.
+% RUN_ALL_MATLAB Run all MATLAB estimation and plotting programs in order.
 %
 % Each estimation driver determines its paths from its own file location.
-% This runner does not generate Figures 1, 3, or 4; run graph_rep.m
-% separately after the estimation drivers have completed.
+% graph_rep.m runs last and produces Figures 1, 3, and 4 after the main
+% estimation program has created the required results MAT file.
 
 clear;
 clc;
@@ -30,4 +30,9 @@ fprintf('\nRunning alternative price-over-income specification...\n');
 run(fullfile(replication_dir, 'demand_priceoverincome', ...
     'demand_priceoverincome.m'));
 
-fprintf('\nAll MATLAB replication drivers completed.\n');
+replication_dir = fileparts(mfilename('fullpath'));
+cd(replication_dir);
+fprintf('\nRunning graphing...\n');
+run(fullfile(replication_dir, 'graph_rep.m'));
+
+fprintf('\nAll MATLAB estimation and plotting programs completed.\n');
